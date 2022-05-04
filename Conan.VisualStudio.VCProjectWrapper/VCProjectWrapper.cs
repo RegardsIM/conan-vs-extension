@@ -16,6 +16,7 @@ namespace Conan.VisualStudio.VCProjectWrapper
         private readonly Project _project;
         public VCProjectWrapper(object project)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             _project = project as Project;
             _vcProject = _project.Object as VCProject;
         }
@@ -42,10 +43,18 @@ namespace Conan.VisualStudio.VCProjectWrapper
             }
         }
 
-        bool IVCProject.Saved => _project.Saved;
+        bool IVCProject.Saved
+        {
+            get
+            {
+                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                return _project.Saved;
+            }
+        }
 
         void IVCProject.Save()
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             _project.Save();
         }
     }

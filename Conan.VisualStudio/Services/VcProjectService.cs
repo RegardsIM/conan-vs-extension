@@ -65,6 +65,7 @@ namespace Conan.VisualStudio.Services
 
         public IVCProject AsVCProject(Project project)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return AsVCProjectImpl(project);
         }
 
