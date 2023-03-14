@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using EnvDTE;
+using System.Configuration;
 
 namespace Conan.VisualStudio.Services
 {
@@ -95,6 +96,13 @@ namespace Conan.VisualStudio.Services
 
         public async System.Threading.Tasks.Task IntegrateAsync(IVCProject vcProject)
         {
+            if (!_settingsService.GetConanAddPropsToProjects())
+            {
+                string message = $"[Conan.VisualStudio] Skip adding Conan props to '{vcProject.FullPath}'";
+                Logger.Log(message);
+                return;
+            }
+
             if(!vcProject.Saved)
             {
                 DialogResult res = MessageBox.Show(

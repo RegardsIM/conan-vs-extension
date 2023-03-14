@@ -15,6 +15,7 @@ namespace Conan.VisualStudio
         private bool? _conanInstallAutomatically;
         private ConanBuildType? _conanBuild;
         private bool? _conanUpdate;
+        private bool? _conanAddPropsToProjects;
 
         protected override void OnApply(PageApplyEventArgs e)
         {
@@ -58,8 +59,8 @@ namespace Conan.VisualStudio
         }
 
         [Category("Conan")]
-        [DisplayName("Install only active configuration")]
-        [Description(@"Install only active configuration, or all configurations")]
+        [DisplayName("Generate only active configuration")]
+        [Description(@"Generate only active configuration or all configurations")]
         public bool ConanInstallOnlyActiveConfiguration
         {
             get => _conanInstallOnlyActiveConfiguration ?? true;
@@ -76,8 +77,8 @@ namespace Conan.VisualStudio
         }
 
         [Category("Conan")]
-        [DisplayName("Install conan dependencies automatically")]
-        [Description(@"Install conan dependencies automatically on solution load")]
+        [DisplayName("Generate conan props automatically")]
+        [Description(@"Generate conan dependencies automatically on solution load")]
         public bool ConanInstallAutomatically
         {
             get => _conanInstallAutomatically ?? false;
@@ -100,6 +101,15 @@ namespace Conan.VisualStudio
         {
             get => _conanUpdate ?? false;
             set => _conanUpdate = value;
+        }
+
+        [Category("Conan")]
+        [DisplayName("Add generated props to projects")]
+        [Description(@"Add generated props to projects as a dependency")]
+        public bool ConanAddPropsToProjects
+        {
+            get => _conanAddPropsToProjects ?? true;
+            set => _conanAddPropsToProjects = value;
         }
     }
 }
