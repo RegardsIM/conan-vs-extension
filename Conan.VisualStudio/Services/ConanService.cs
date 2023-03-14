@@ -35,14 +35,21 @@ namespace Conan.VisualStudio.Services
             _dte = dte;
         }
 
+        private string GetPropsFilePath()
+        {
+            switch (_settingsService.GetConanGenerator())
+            {
+                case ConanGeneratorType.visual_studio: return @"conanbuildinfo.props";
+                case ConanGeneratorType.visual_studio_multi: return @"conanbuildinfo_multi.props";
+                case ConanGeneratorType.MSBuildDeps: return @"conandeps.props";
+                default: return @"conanbuildinfo_multi.props";
+            }
+        }
+
         private string GetPropsFilePath(IVCConfiguration configuration)
         {
             string installPath = _vcProjectService.GetInstallationDirectory(_settingsService, configuration);
-            string propFileName;
-            if (_settingsService.GetConanGenerator() == ConanGeneratorType.visual_studio)
-                propFileName = @"conanbuildinfo.props";
-            else
-                propFileName = @"conanbuildinfo_multi.props";
+            string propFileName = GetPropsFilePath();
             return Path.Combine(installPath, propFileName);
         }
 
