@@ -32,7 +32,7 @@ namespace Conan.VisualStudio.Menu
 
             string message = String.Format("Conan Extension for Visual Studio\n" +
                 $"Version\t: {version}\n" +
-                $"Commit\t: {fileVersionInfo}");
+                $"Git\t: {fileVersionInfo}");
             MessageBox.Show(message, "About Conan Extension", MessageBoxButtons.OK);
         }
     }
