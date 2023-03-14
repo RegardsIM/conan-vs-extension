@@ -53,7 +53,7 @@ namespace Conan.VisualStudio
         [Description(@"Path to the conan installation directory, may use macro like $(OutDir) or $(ProjectDir). Absolute or relative to the project directory.")]
         public string ConanInstallationPath
         {
-            get => _conanInstallationPath ?? (_conanInstallationPath = "$(OutDir).conan");
+            get => _conanInstallationPath ?? (_conanInstallationPath = "$(SolutionDir)conan");
             set => _conanInstallationPath = value;
         }
 
