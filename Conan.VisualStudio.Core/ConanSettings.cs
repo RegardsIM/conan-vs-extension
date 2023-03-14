@@ -16,7 +16,9 @@ namespace Conan.VisualStudio.Core
 
     public enum ConanGeneratorType
     {
-        visual_studio
+        visual_studio,
+        visual_studio_multi,
+        MSBuildDeps
     }
 
     public enum ConanBuildType

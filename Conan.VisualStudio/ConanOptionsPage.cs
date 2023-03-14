@@ -71,7 +71,7 @@ namespace Conan.VisualStudio
         [Description(@"Conan generator to use")]
         public ConanGeneratorType ConanGenerator
         {
-            get => _conanGenerator ?? ConanGeneratorType.visual_studio;
+            get => _conanGenerator ?? ConanGeneratorType.visual_studio_multi;
             set => _conanGenerator = value;
         }
 
@@ -80,7 +80,7 @@ namespace Conan.VisualStudio
         [Description(@"Install conan dependencies automatically on solution load")]
         public bool ConanInstallAutomatically
         {
-            get => _conanInstallAutomatically ?? true;
+            get => _conanInstallAutomatically ?? false;
             set => _conanInstallAutomatically = value;
         }
 
@@ -98,7 +98,7 @@ namespace Conan.VisualStudio
         [Description(@"Check updates exist from upstream remotes")]
         public bool ConanUpdate
         {
-            get => _conanUpdate ?? true;
+            get => _conanUpdate ?? false;
             set => _conanUpdate = value;
         }
     }
