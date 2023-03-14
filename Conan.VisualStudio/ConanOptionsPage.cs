@@ -41,7 +41,7 @@ namespace Conan.VisualStudio
         }
 
         [Category("Conan")]
-        [DisplayName("Conan executable")]
+        [DisplayName("Executable path")]
         [Description(@"Path to the Conan executable file, like C:\Python27\Scripts\conan.exe")]
         public string ConanExecutablePath
         {
@@ -49,8 +49,8 @@ namespace Conan.VisualStudio
             set => _conanExecutablePath = value;
         }
 
-        [Category("Conan")]
-        [DisplayName("Conan installation directory")]
+        [Category("Arguments")]
+        [DisplayName("Install directory (--install-folder)")]
         [Description(@"Path to the conan installation directory, may use macro like $(OutDir) or $(ProjectDir). Absolute or relative to the project directory.")]
         public string ConanInstallationPath
         {
@@ -67,8 +67,8 @@ namespace Conan.VisualStudio
             set => _conanInstallOnlyActiveConfiguration = value;
         }
 
-        [Category("Conan")]
-        [DisplayName("Generator")]
+        [Category("Arguments")]
+        [DisplayName("Generator (-g)")]
         [Description(@"Conan generator to use")]
         public ConanGeneratorType ConanGenerator
         {
@@ -85,8 +85,8 @@ namespace Conan.VisualStudio
             set => _conanInstallAutomatically = value;
         }
 
-        [Category("Conan")]
-        [DisplayName("Build policy")]
+        [Category("Arguments")]
+        [DisplayName("Build policy (--build)")]
         [Description(@"--build argument (always, never, missing, cascade, outdated or none)")]
         public ConanBuildType ConanBuild
         {
@@ -94,8 +94,8 @@ namespace Conan.VisualStudio
             set => _conanBuild = value;
         }
 
-        [Category("Conan")]
-        [DisplayName("Update policy")]
+        [Category("Arguments")]
+        [DisplayName("Add update flag (--update)")]
         [Description(@"Check updates exist from upstream remotes")]
         public bool ConanUpdate
         {
