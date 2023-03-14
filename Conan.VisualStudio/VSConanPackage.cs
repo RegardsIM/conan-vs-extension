@@ -9,6 +9,7 @@ using Conan.VisualStudio.Core.VCInterfaces;
 using Conan.VisualStudio.Menu;
 using Conan.VisualStudio.Services;
 using EnvDTE;
+using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -39,7 +40,7 @@ namespace Conan.VisualStudio
         private ConanAbout _conanAbout;
         private DTE _dte;
         private SolutionEvents _solutionEvents;
-        private IVsSolution _solution;
+        private IVsSolution4 _solution;
         private ISettingsService _settingsService;
         private IVcProjectService _vcProjectService;
         private IConanService _conanService;
@@ -57,6 +58,7 @@ namespace Conan.VisualStudio
             // Handle commandline switch
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var cmdLine = await GetServiceAsync(typeof(SVsAppCommandLine)) as IVsAppCommandLine;
+            Assumes.Present(cmdLine);
             ErrorHandler.ThrowOnFailure(cmdLine.GetOption(_cliSwitch, out int isPresent, out string optionValue));
             if (isPresent == 1)
             {
@@ -65,7 +67,7 @@ namespace Conan.VisualStudio
 
             _dte = await GetServiceAsync<DTE>();
 
-            _solution = await GetServiceAsync<SVsSolution>() as IVsSolution;
+            _solution = await GetServiceAsync<SVsSolution>() as IVsSolution4;
             _solutionBuildManager = await GetServiceAsync<IVsSolutionBuildManager>() as IVsSolutionBuildManager3;
 
             var serviceProvider = new ServiceProvider((Microsoft.VisualStudio.OLE.Interop.IServiceProvider)_dte);
@@ -76,7 +78,7 @@ namespace Conan.VisualStudio
             _vcProjectService = new VcProjectService();
             _settingsService = new VisualStudioSettingsService(this);
             _errorListService = new ErrorListService();
-            _conanService = new ConanService(_settingsService, _errorListService, _vcProjectService);
+            _conanService = new ConanService(_settingsService, _errorListService, _vcProjectService, _solution, _dte);
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -193,7 +195,7 @@ namespace Conan.VisualStudio
         private void InstallConanDeps(IVCProject vcProject)
         {
             _errorListService.Clear();
-            ThreadHelper.JoinableTaskFactory.RunAsync(
+            _ = ThreadHelper.JoinableTaskFactory.RunAsync(
                 async delegate
                 {
                     bool success = await _conanService.InstallAsync(vcProject);
@@ -214,7 +216,10 @@ namespace Conan.VisualStudio
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            InstallConanDepsIfRequired(project);
+            if (_conanService.RefreshingProjects.Contains(project.FullName))
+                _conanService.RefreshingProjects.Remove(project.FullName);
+            else
+                InstallConanDepsIfRequired(project);
         }
 
         private void InstallConanDepsIfRequired(Project project)
