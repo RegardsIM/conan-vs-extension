@@ -12,9 +12,7 @@ namespace Conan.VisualStudio.Services
         /// <returns>Installation path. Might contain visual studio macro definitions (like $(OutDir)). Relative path is evaluated against project directory</returns>
         string GetConanInstallationPath();
 
-        /// <summary>Returns True if install only active configuration, as defined in the project options.</summary>
-        /// <returns>Boolean flag describing conan installation mode</returns>
-        bool GetConanInstallOnlyActiveConfiguration();
+        ConanUsedConfigurationType GetConanUsedConfiguration();
 
         /// <summary>
         /// returns default conan generator, either visual_studio, or visual_studio_multi

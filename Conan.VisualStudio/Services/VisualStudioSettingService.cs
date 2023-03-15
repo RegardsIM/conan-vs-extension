@@ -31,9 +31,9 @@ namespace Conan.VisualStudio.Services
             return GetConanPage().ConanInstallationPath;
         }
 
-        public bool GetConanInstallOnlyActiveConfiguration()
+        public ConanUsedConfigurationType GetConanUsedConfiguration()
         {
-            return GetConanPage().ConanInstallOnlyActiveConfiguration;
+            return GetConanPage().ConanUsedConfiguration;
         }
 
         public ConanGeneratorType GetConanGenerator()

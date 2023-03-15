@@ -187,7 +187,7 @@ namespace Conan.VisualStudio
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (_settingsService.GetConanInstallOnlyActiveConfiguration())
+            if (_settingsService.GetConanUsedConfiguration() == ConanUsedConfigurationType.active_only)
                 InstallConanDepsIfRequired();
             return VSConstants.S_OK;
         }

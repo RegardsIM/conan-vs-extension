@@ -10,7 +10,7 @@ namespace Conan.VisualStudio
     {
         private string _conanExecutablePath;
         private string _conanInstallationPath;
-        private bool? _conanInstallOnlyActiveConfiguration;
+        private ConanUsedConfigurationType? _conanUsedConfiguration;
         private ConanGeneratorType? _conanGenerator;
         private ConanTriggerType? _conanTrigger;
         private ConanBuildType? _conanBuild;
@@ -59,12 +59,12 @@ namespace Conan.VisualStudio
         }
 
         [Category("Conan")]
-        [DisplayName("Generate only active configuration")]
-        [Description(@"Generate only active configuration or all configurations")]
-        public bool ConanInstallOnlyActiveConfiguration
+        [DisplayName("Used configuration")]
+        [Description(@"Generate props for active configuration only or for all configurations")]
+        public ConanUsedConfigurationType ConanUsedConfiguration
         {
-            get => _conanInstallOnlyActiveConfiguration ?? true;
-            set => _conanInstallOnlyActiveConfiguration = value;
+            get => _conanUsedConfiguration ?? ConanUsedConfigurationType.active_only;
+            set => _conanUsedConfiguration = value;
         }
 
         [Category("Arguments")]

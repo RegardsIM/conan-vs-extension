@@ -36,4 +36,10 @@ namespace Conan.VisualStudio.Core
         manual,
         automatic
     }
+
+    public enum ConanUsedConfigurationType
+    {
+        active_only,
+        all
+    }
 }

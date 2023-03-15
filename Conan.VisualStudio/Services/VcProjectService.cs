@@ -97,7 +97,7 @@ namespace Conan.VisualStudio.Services
                 ConfigFile = projectConanConfig
             };
 
-            if (settingsService != null && settingsService.GetConanInstallOnlyActiveConfiguration())
+            if (settingsService != null && settingsService.GetConanUsedConfiguration() == ConanUsedConfigurationType.active_only)
             {
                 project.Configurations.Add(ExtractConanConfiguration(settingsService, vcProject.ActiveConfiguration));
             }

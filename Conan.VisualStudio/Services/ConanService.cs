@@ -123,7 +123,7 @@ namespace Conan.VisualStudio.Services
             }
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            if (_settingsService.GetConanInstallOnlyActiveConfiguration())
+            if (_settingsService.GetConanUsedConfiguration() == ConanUsedConfigurationType.active_only)
             {
                 IntegrateIntoConfiguration(vcProject.ActiveConfiguration, _solution, ref vcProject);
             }
