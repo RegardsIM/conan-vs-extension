@@ -22,9 +22,7 @@ namespace Conan.VisualStudio.Services
         /// <returns>value of default conan generator type</returns>
         ConanGeneratorType GetConanGenerator();
 
-        /// <summary>Returns True if install conan dependencies automatically, on solution load.</summary>
-        /// <returns>Boolean flag describing conan installation mode</returns>
-        bool GetConanInstallAutomatically();
+        ConanTriggerType GetConanTrigger();
 
         ConanBuildType GetConanBuild();
         bool GetConanUpdate();

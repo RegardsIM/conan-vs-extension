@@ -41,9 +41,9 @@ namespace Conan.VisualStudio.Services
             return GetConanPage().ConanGenerator;
         }
 
-        public bool GetConanInstallAutomatically()
+        public ConanTriggerType GetConanTrigger()
         {
-            return GetConanPage().ConanInstallAutomatically;
+            return GetConanPage().ConanTrigger;
         }
 
         public ConanBuildType GetConanBuild()

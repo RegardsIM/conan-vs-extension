@@ -30,4 +30,10 @@ namespace Conan.VisualStudio.Core
         outdated,
         none
     }
+
+    public enum ConanTriggerType
+    {
+        manual,
+        automatic
+    }
 }

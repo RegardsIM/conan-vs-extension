@@ -12,7 +12,7 @@ namespace Conan.VisualStudio
         private string _conanInstallationPath;
         private bool? _conanInstallOnlyActiveConfiguration;
         private ConanGeneratorType? _conanGenerator;
-        private bool? _conanInstallAutomatically;
+        private ConanTriggerType? _conanTrigger;
         private ConanBuildType? _conanBuild;
         private bool? _conanUpdate;
         private bool? _conanAddPropsToProjects;
@@ -77,12 +77,12 @@ namespace Conan.VisualStudio
         }
 
         [Category("Conan")]
-        [DisplayName("Generate conan props automatically")]
-        [Description(@"Generate conan dependencies automatically on solution load")]
-        public bool ConanInstallAutomatically
+        [DisplayName("Conan trigger")]
+        [Description(@"Generate conan dependencies automatically on solution load or by manual click")]
+        public ConanTriggerType ConanTrigger
         {
-            get => _conanInstallAutomatically ?? false;
-            set => _conanInstallAutomatically = value;
+            get => _conanTrigger ?? ConanTriggerType.manual;
+            set => _conanTrigger = value;
         }
 
         [Category("Arguments")]

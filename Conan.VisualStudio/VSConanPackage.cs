@@ -226,7 +226,7 @@ namespace Conan.VisualStudio
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (_settingsService.GetConanInstallAutomatically())
+            if (_settingsService.GetConanTrigger() == ConanTriggerType.automatic)
             {
                 if (_vcProjectService.IsConanProject(project))
                     InstallConanDeps(_vcProjectService.AsVCProject(project));
@@ -237,7 +237,7 @@ namespace Conan.VisualStudio
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (_settingsService.GetConanInstallAutomatically())
+            if (_settingsService.GetConanTrigger() == ConanTriggerType.automatic)
             {
                 foreach (Project project in _dte.Solution.Projects)
                 {
