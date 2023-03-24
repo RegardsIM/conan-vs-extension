@@ -157,7 +157,7 @@ namespace Conan.VisualStudio.Services
             {
                 var installPath = configuration.InstallPath;
                 await System.Threading.Tasks.Task.Run(() => Directory.CreateDirectory(installPath));
-                var logFilePath = Path.Combine(installPath, $"conan_{Guid.NewGuid().ToString()}.log");
+                var logFilePath = Path.Combine(installPath, $"conan_extention_output.log");
 
                 using (var logFile = File.Open(logFilePath, FileMode.Create, FileAccess.Write, FileShare.Read))
                 using (var logStream = new StreamWriter(logFile))
