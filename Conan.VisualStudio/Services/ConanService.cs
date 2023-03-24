@@ -73,14 +73,6 @@ namespace Conan.VisualStudio.Services
             //From this point, vcProject and configuration properties that use it are no more valid
             configuration.AddPropertySheet(relativePropFilePath, vcProjectFullPath);
             solution.ReloadProject(guid);
-            //Recreate vcProject
-            foreach (Project project in _dte.Solution.Projects)
-            {
-                if (project.FullName == projectFullName)
-                {
-                    vcProject = _vcProjectService.AsVCProject(project);
-                }
-            }
             Logger.Log($"[Conan.VisualStudio] Property sheet '{absPropFilePath}' added or updated in project {projectName}");
         }
 
@@ -131,6 +123,16 @@ namespace Conan.VisualStudio.Services
 
         public async Task<bool> InstallAsync(IVCProject vcProject)
         {
+            var project = await PrepareConanProjectAsync(vcProject);
+            if (project == null)
+            {
+                return false;
+            }
+            return await InstallAsync(project);
+        }
+
+        public async Task<bool> InstallAsync(ConanProject project)
+        {
             var conanPath = _settingsService.GetConanExecutablePath();
             if (conanPath == null || conanPath == "")
             {
@@ -140,15 +142,18 @@ namespace Conan.VisualStudio.Services
                 return false;
             }
 
+            var conan = new ConanRunner(conanPath);
+            return await InstallDependenciesAsync(conan, project);
+        }
+
+        public async Task<ConanProject> PrepareConanProjectAsync(IVCProject vcProject)
+        {
             var project = await _vcProjectService.ExtractConanProjectAsync(vcProject, _settingsService);
             if (project == null)
             {
                 _errorListService.WriteError("Unable to extract conan project!");
-                return false;
             }
-            var conan = new ConanRunner(conanPath);
-
-            return await InstallDependenciesAsync(conan, project);
+            return project;
         }
 
         private async Task<bool> InstallDependenciesAsync(ConanRunner conan, ConanProject project)

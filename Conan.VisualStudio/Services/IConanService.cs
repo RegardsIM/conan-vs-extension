@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Conan.VisualStudio.Core;
 using Conan.VisualStudio.Core.VCInterfaces;
 
 namespace Conan.VisualStudio.Services
@@ -14,5 +15,9 @@ namespace Conan.VisualStudio.Services
         Task IntegrateAsync(IVCProject vcProject);
 
         Task<bool> InstallAsync(IVCProject vcProject);
+
+        Task<bool> InstallAsync(ConanProject project);
+
+        Task<ConanProject> PrepareConanProjectAsync(IVCProject vcProject);
     }
 }

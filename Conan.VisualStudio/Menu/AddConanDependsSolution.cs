@@ -7,6 +7,11 @@ using Microsoft.VisualStudio.Threading;
 using Task = System.Threading.Tasks.Task;
 using System;
 using EnvDTE;
+using EnvDTE80;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.OLE.Interop;
+using Conan.VisualStudio.Core;
 
 namespace Conan.VisualStudio.Menu
 {
@@ -37,18 +42,85 @@ namespace Conan.VisualStudio.Menu
             _errorListService.Clear();
 
             var dte = Package.GetGlobalService(typeof(SDTE)) as DTE;
-            foreach (Project project in dte.Solution.Projects)
+            var projects = GetSolutionProjects(dte.Solution);
+
+            if (!await IntegrateConanPropsAsync(projects))
             {
-                if (_vcProjectService.IsConanProject(project))
-                {
-                    bool success = await _conanService.InstallAsync(_vcProjectService.AsVCProject(project));
-                    if (success)
-                    {
-                        await _conanService.IntegrateAsync(_vcProjectService.AsVCProject(project));
-                    }
-                }
+                Logger.Log($"[Conan.VisualStudio] ========== Build failed ==========");
+                return;
             }
+
+            Logger.Log($"[Conan.VisualStudio] ========== Build succeeded, {projects.Count} updated ==========");
             await TaskScheduler.Default;
+        }
+
+        private async Task<bool> IntegrateConanPropsAsync(List<Project> projects)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var conanfiles = new HashSet<string>();
+
+            foreach (Project project in projects)
+            {
+                Logger.Log($"[Conan.VisualStudio] Processing {project.Name} project...");
+                var vcProject = _vcProjectService.AsVCProject(project);
+                var conanProject = await _conanService.PrepareConanProjectAsync(vcProject);
+                if (conanProject == null)
+                {
+                    return false;
+                }
+
+                if (!conanfiles.Contains(conanProject.Path) && !await _conanService.InstallAsync(conanProject))
+                {
+                    return false;
+                }
+
+                conanfiles.Add(conanProject.Path);
+                await _conanService.IntegrateAsync(vcProject);
+            }
+            return true;
+        }
+
+        private List<Project> GetSolutionProjects(Solution solution)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            List<Project> projects = new List<Project>();
+            foreach (Project project in solution.Projects)
+            {
+                AddProjects(projects, project);
+            }
+            return projects;
+        }
+
+        private void AddProjects(List<Project> projects, Project project)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (project == null)
+            {
+                return;
+            }
+
+            if (_vcProjectService.IsConanProject(project))
+            {
+                projects.Add(project);
+                return;
+            }
+
+            AddProjects(projects, project.ProjectItems);
+        }
+
+        private void AddProjects(List<Project> projects, ProjectItems items)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (items == null)
+            {
+                return;
+            }
+
+            foreach (ProjectItem item in items)
+            {
+                AddProjects(projects, item.SubProject);
+                AddProjects(projects, item.ProjectItems);
+            }
         }
     }
 }
