@@ -1,5 +1,6 @@
 using System.ComponentModel.Design;
 using Conan.VisualStudio.Services;
+using EnvDTE;
 using Task = System.Threading.Tasks.Task;
 
 namespace Conan.VisualStudio.Menu
@@ -34,10 +35,14 @@ namespace Conan.VisualStudio.Menu
                 return;
             }
 
-            bool success = await _conanService.InstallAsync(vcProject);
-            if (success)
+            if (await _conanService.InstallAsync(vcProject))
             {
                 await _conanService.IntegrateAsync(vcProject);
+                Logger.Log($"[Conan.VisualStudio] ========== Build succeeded, 1 updated ==========");
+            }
+            else
+            {
+                Logger.Log($"[Conan.VisualStudio] ========== Build failed ==========");
             }
         }
     }
