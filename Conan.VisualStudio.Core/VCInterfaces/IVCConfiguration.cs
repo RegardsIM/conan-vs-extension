@@ -30,8 +30,6 @@ namespace Conan.VisualStudio.Core.VCInterfaces
 
         void AddPropertySheet(string sheet, string projectFileName);
 
-        bool IsPropertySheetPresent(string sheet);
-
         void CollectIntelliSenseInfo();
 
         List<IVCPropertySheet> PropertySheets { get; }

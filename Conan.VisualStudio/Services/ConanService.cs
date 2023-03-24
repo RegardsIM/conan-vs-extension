@@ -66,32 +66,22 @@ namespace Conan.VisualStudio.Services
 
             configuration.AdditionalDependencies = configuration.AdditionalDependencies.Replace("$(NOINHERIT)", "");
 
-            bool bPropPresent = configuration.IsPropertySheetPresent(relativePropFilePath);
-            if (!bPropPresent)
+            Guid guid = new Guid(vcProject.Guid);
+            string vcProjectFullPath = vcProject.FullPath;
+            _refreshingProjects.Add(vcProjectFullPath);
+            solution.UnloadProject(guid, (uint)_VSProjectUnloadStatus.UNLOADSTATUS_UnloadedByUser);
+            //From this point, vcProject and configuration properties that use it are no more valid
+            configuration.AddPropertySheet(relativePropFilePath, vcProjectFullPath);
+            solution.ReloadProject(guid);
+            //Recreate vcProject
+            foreach (Project project in _dte.Solution.Projects)
             {
-                Guid guid = new Guid(vcProject.Guid);
-                string vcProjectFullPath = vcProject.FullPath;
-                _refreshingProjects.Add(vcProjectFullPath);
-                solution.UnloadProject(guid, (uint)_VSProjectUnloadStatus.UNLOADSTATUS_UnloadedByUser);
-                //From this point, vcProject and configuration properties that use it are no more valid
-                configuration.AddPropertySheet(relativePropFilePath, vcProjectFullPath);
-                solution.ReloadProject(guid);
-                //Recreate vcProject
-                foreach (Project project in _dte.Solution.Projects)
+                if (project.FullName == projectFullName)
                 {
-                    if (project.FullName == projectFullName)
-                    {
-                        vcProject = _vcProjectService.AsVCProject(project);
-                    }
+                    vcProject = _vcProjectService.AsVCProject(project);
                 }
-
-                Logger.Log($"[Conan.VisualStudio] Property sheet '{absPropFilePath}' added (or updated) to project {projectName}");
             }
-            else
-            {
-                Logger.Log($"[Conan.VisualStudio] Property sheet '{absPropFilePath}' already added to project {projectName}");
-                configuration.CollectIntelliSenseInfo();
-            }
+            Logger.Log($"[Conan.VisualStudio] Property sheet '{absPropFilePath}' added or updated in project {projectName}");
         }
 
         public async System.Threading.Tasks.Task IntegrateAsync(IVCProject vcProject)

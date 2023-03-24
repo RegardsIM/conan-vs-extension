@@ -74,29 +74,6 @@ namespace Conan.VisualStudio.VCProjectWrapper
             return _configuration.Evaluate(value);
         }
 
-        public bool IsPropertySheetPresent(string sheet)
-        {
-            string vcProjectFilename = Path.Combine(_configuration.project.ProjectDirectory, _configuration.project.ProjectFile);
-            ProjectRootElement project = ProjectRootElement.Open(vcProjectFilename);
-            string configCondition = "'$(Configuration)|$(Platform)'=='" + _configuration.Name + "'";
-            bool bIsInVcxproj = false;
-            bool bIsLoaded = false;
-
-            foreach (ProjectImportGroupElement importGroup in project.ImportGroups)
-                if (importGroup.Label == "PropertySheets" && importGroup.Condition == configCondition)
-                    foreach (ProjectImportElement importElement in importGroup.Imports)
-                        if (importElement.Project == sheet && importElement.Condition == "Exists('" + sheet + "')")
-                            bIsInVcxproj = true;
-
-            foreach (VCPropertySheet VCsheet in _configuration.PropertySheets)
-            {
-                if (ConanPathHelper.GetRelativePath(ProjectDirectory, VCsheet.PropertySheetFile) == sheet)
-                    bIsLoaded = true;
-            }
-
-            return bIsLoaded && bIsInVcxproj;
-        }
-
         public void AddPropertySheet(string sheet, string projectFileName)
         {
             ProjectRootElement project = ProjectRootElement.Open(projectFileName);
